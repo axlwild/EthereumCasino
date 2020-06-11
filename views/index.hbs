@@ -10,12 +10,14 @@ Holaaa!
         web3 = new Web3(web3.currentProvider);
     } else {
         // set the provider you want from Web3.providers
-        web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+        web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:9545"));
     }
+    var provider = new Web3.providers.HttpProvider("http://127.0.0.1:9545");
     let accounts = web3.eth.getAccounts()
     accounts.then((currentAccounts) =>{
         web3.eth.defaultAccount = currentAccounts[0];
-
+        console.log(currentAccounts[0]);
+        
         var EthereumSessionTruffle = TruffleContract({abi: [
             {
                 "inputs": [
@@ -90,10 +92,11 @@ Holaaa!
                 "type": "function"
             }
             ]})
-        
+        console.log(EthereumSessionTruffle);
         EthereumSessionTruffle.setProvider(provider);
         var esTruffleInstance = null;
-        EthereumSessionTruffle.at("0x7e346e64304deC0dD53603C218bc2Af89D4B119C").then((instance) =>{
+        EthereumSessionTruffle.at("0x7eA5D052e299260C81665672F78d65f23E601C9d").then((instance) =>{
+        //EthereumSessionTruffle.deployed().then((instance) =>{
             esTruffleInstance = instance;
             var numerosApostados = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,17,18,19,20];
             var apuesta = 1;
@@ -114,7 +117,7 @@ Holaaa!
         })
     });
 
-    var provider = new Web3.providers.HttpProvider("http://localhost:7545");
+    
     
     
 </script>
