@@ -1,0 +1,26 @@
+{
+  "name": "casino",
+  "version": "1.0.0",
+  "description": "Proyecto de casino para clase de Blockchains",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/axlwild/EthereumCasino.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/axlwild/EthereumCasino/issues"
+  },
+  "homepage": "https://github.com/axlwild/EthereumCasino#readme",
+  "dependencies": {
+    "@truffle/contract": "^4.2.8",
+    "bootstrap": "^4.0.0-alpha.6",
+    "express": "^4.17.1",
+    "hbs": "^4.1.1",
+    "web3": "^1.2.9"
+  }
+}
