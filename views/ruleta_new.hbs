@@ -13,6 +13,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/ruleta">Ruleta</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/tragamonedas">Tragamonedas</a>
+                </li>
             </ul>
         </div>
     </nav>
@@ -38,11 +41,13 @@
     <div class="form-group">
         <button id="jugarRuleta"  class="btn btn-large btn-warning" >¡Juega ruleta!</button>
     </div>
+    <!--
     <div class="form-group">
         <button id="getResultsRuleta"  class="btn btn-large btn-warning">Obtener resultados</button>
     </div>
+    -->
     <div class="form-group">
-        <button id="getBetArray" class="btn btn-large btn-warning">Obtener arreglo bet</button>
+        <button id="getBetArray" class="btn btn-large btn-warning">Resultados</button>
     </div>
     <div class="form-group">
         <button id="spin" class="btn btn-large btn-warning">Spin</button>
@@ -223,22 +228,8 @@
                     return EthSession.methods.counter().call().then((idApuesta) => {
                         console.log("id apuesta:");
                         console.log(idApuesta);
-                        console.log("Girando la ruleta:");
+                        alert(`tu id de apuesta es el +${idApuesta}, espera a que estén los resultados`);
                         //mensaje = res.events.logJuego.returnValues[0];
-                        return EthSession.methods.spin(idApuesta).send({from: currentAccounts[0]}).then((response) => {
-                            alert(`tu id de apuesta es el +${idApuesta}, espera a que estén los resultados`);
-                            console.log("respuesta del spin:");
-                            console.log(response);
-                            aux2 = response;
-                            return;
-                        }).catch(error =>{
-                            alert("No se puede obtener el id, espera a que se genere al número");
-                            console.log("Error al obtener el contador");
-                            console.log(error);
-                        });
-
-
-
                         return;
                     }).catch(error =>{
                         console.log("Error en spin");
@@ -307,28 +298,38 @@
                     console.log(idApuesta);
                     //mensaje = res.events.logJuego.returnValues[0];
                     //alert(mensaje);
-                    return EthSession.methods.bets(idApuesta).call().then(betObj => {
-                        console.log("Objeto de apuests");
-                        console.log(betObj);
-                        return EthSession.methods.ganador(idApuesta).send({from: currentAccounts[0]}).then(resObj => {
-                            console.log("Objeto resultados:");    
-                            console.log(resObj);    
-                            if (resObj.events.Spin.returnValues.win === true){
-                                alert(`¡Felicidades! Ganaste ${resObj.events.Spin.returnValues.amount} wei.`)
-                            }
-                            else if (resObj.events.Spin.returnValues.win === false){
-                                alert(`¡Suerte para la próxima! No ganaste.`)
-                            }
+                    return EthSession.methods.spin(idApuesta).send({from: currentAccounts[0]}).then((response) => {
+                        console.log("respuesta del spin:");
+                        console.log(response);
+                        aux2 = response;
+                        return EthSession.methods.bets(idApuesta).call().then(betObj => {
+                            console.log("Objeto de apuests");
+                            console.log(betObj);
+                            return EthSession.methods.ganador(idApuesta).send({from: currentAccounts[0]}).then(resObj => {
+                                console.log("Objeto resultados:");    
+                                console.log(resObj);    
+                                if (resObj.events.Spin.returnValues.win === true){
+                                    alert(`¡Felicidades! Ganaste ${resObj.events.Spin.returnValues.amount} wei.`)
+                                }
+                                else if (resObj.events.Spin.returnValues.win === false){
+                                    alert(`¡Suerte para la próxima! No ganaste.`)
+                                }
+                                return;
+                            }).catch(error =>{
+                                console.log("Hubo un error al cobrar la apuesta.");
+                                return;
+                            })
                             return;
                         }).catch(error =>{
-                            console.log("Hubo un error al cobrar la apuesta.");
+                            console.log("Ha ocurrido un error al obtener la apuesta,");
                             return;
-                        })
-                        return;
+                        });
                     }).catch(error =>{
-                        console.log("Ha ocurrido un error al obtener la apuesta,");
-                        return;
+                        alert("No se puede obtener el id, espera a que se genere al número");
+                        console.log("Error al obtener el contador");
+                        console.log(error);
                     });
+                    
                 }).catch(error =>{
                     alert("Error al obtener id de apuesta");
                     console.log("Error al obtener id de apuesta.");
