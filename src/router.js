@@ -7,5 +7,9 @@ router.get('/', function(req, res) {
 
 router.get('/contract', controller.renderCasinoIndex );
 
+router.get('/random', controller.renderCasinoRandom );
+
+router.get('/tragamonedas', controller.renderCasinoTragamonedas);
+
 
 module.exports = router
