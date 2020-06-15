@@ -204,8 +204,8 @@
         
     }
     function getResultsTragamonedas(){
-        //const contractAdress = "0x2Cf911305d29ca55C1E0826f097a75037d5c8A2A";      // Versión 2
-        const contractAdress = "0xC569b354C8cA672699e50Aa354EDcbecDa47d442";      // Versión 3, con return.
+        const contractAdress = "0x2Cf911305d29ca55C1E0826f097a75037d5c8A2A";      // Versión 2
+        //const contractAdress = "0xC569b354C8cA672699e50Aa354EDcbecDa47d442";      // Versión 3, con return.
         
         console.log("obteniendo Resultados");
         var provider = new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/8a4a483fc902489d93bd7d5d07ef8512");
@@ -224,9 +224,12 @@
                 console.log(currentAccounts);
                 console.log('EthSession');
                 console.log(EthSession.methods);
-                return EthSession.methods.verResultados().send({from: currentAccounts[0], value: 20000000000000000}).then((res) => {
+                return EthSession.methods.verResultados().send({from: currentAccounts[0]}).then((res) => {
                 //return EthSession.methods.consultarResultado().send({from: currentAccounts[0]}).then((res) => {
                     console.log("¡Estos son los resultados!");
+                    results = res.events.logPremio.returnValues;
+                    console.log(results[0] + '   ' +results[1] + '   ' + results[2] + results[3]);
+                    alert( results[0] + '   ' +results[1] + '   ' + results[2] + results[3] );
                     aux = res;
                     return;
                 }).catch(error =>{
