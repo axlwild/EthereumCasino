@@ -11,5 +11,9 @@ router.get('/random', controller.renderCasinoRandom );
 
 router.get('/tragamonedas', controller.renderCasinoTragamonedas);
 
+router.get('/keno', controller.renderNewKeno);
+
+router.get('/ruleta', controller.renderNewRuleta);
+
 
 module.exports = router

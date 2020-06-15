@@ -11,3 +11,10 @@ exports.renderCasinoTragamonedas = (req, res) => {
     res.render('tragamonedas')
 }
 
+exports.renderNewKeno = (req, res) => {
+    res.render('keno')
+}
+exports.renderNewRuleta = (req, res) => {
+    res.render('ruleta_new')
+}
+
