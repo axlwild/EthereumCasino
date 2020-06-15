@@ -22,9 +22,37 @@
     <h1>
         Keno
     </h1>
-
+    <form action="javascript:playKeno();">
+        <div class="form-group">
+            <label for="numCasillas">Número de casillas que quieres apostar</label>
+            <select name="numCasillas" id="numCasillas">
+                <option value="1">1</option>    
+                <option value="2">2</option>    
+                <option value="3">3</option>    
+                <option value="4">4</option>    
+                <option value="5">5</option>    
+                <option value="6">6</option>    
+                <option value="7">7</option>    
+                <option value="8">8</option>    
+                <option value="9">9</option>    
+                <option value="10">10</option>    
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="casillas">Escoge tus casillas</label>
+            <div class="casillas">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="apuesta">¿Cuánto quieres apostar?</label>
+            <input type="number" placeholder="Apuesta:" id="apuesta" required> 
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-large btn-warning" >Apostar</button>
+        </div>
+    </form>
     <div class="form-group">
-        <button id="jugarTragamonedas"  class="btn btn-large btn-warning" >¡Juega keno de pryeba! (Costo 0.02 ether)</button>
+        <button id="jugarKeno"  class="btn btn-large btn-warning" >¡Juega keno de pryeba! (Costo 0.02 ether)</button>
     </div>
     <div class="form-group">
         <button id="getResultsKeno"  class="btn btn-large btn-warning">Obtener resultados</button>
@@ -47,9 +75,40 @@
 </script>
 
 <script>
+    // Variables debug. Ignorar.
     var aux = "";
     var aux2 = "";
+    // Casillas y cantidad a apostar.
+    var num_casillas ;
+    var apuesta      ;
+    var casillasArray = [];
+
+
     $(document).ready(function(){
+        /* Actualiza dependiendo de la opción de número de casillas a apostar.*/
+        $('#numCasillas').change(function(){
+            num_casillas = $(this).val();
+            $('.casillas').html('');
+            for(i = 1; i <= num_casillas; i++){
+                $('.casillas').append(`<input type="number" data-id="${i}" placeholder="Casilla #${i}" id="casilla${i}" min="1" max="80" required>`);
+            }
+        });
+
+        playKeno = () => {
+            num_casillas = $('#numCasillas').val();
+            apuesta      = $('#apuesta').val();
+            casillasArray = [];
+            for (i = 1; i<= num_casillas; i++){
+                currentVal = $(`#casilla${i}`).val();
+                if ((currentVal > 80) || (currentVal < 1)){
+                    alert("Los números deben de ir de 1 a 80.");
+                    return;
+                }
+                casillasArray.push(currentVal);
+            }
+            playWeb3();
+        }
+
         var web3;
         if (typeof web3 !== 'undefined') {
             web3 = new Web3(web3.currentProvider);
@@ -59,6 +118,7 @@
             // set the provider you want from Web3.providers
             web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/8a4a483fc902489d93bd7d5d07ef8512"));
         }
+        // Necesario para MetaMask.
         const ethEnabled = () => {
         if (window.ethereum) {
             window.web3 = new Web3(window.ethereum);
@@ -70,8 +130,9 @@
         ethEnabled();
         //play();
         //playWeb3();
-        $('#jugarTragamonedas').click(function(){
-            playWeb3();
+
+        $('#jugarKeno').click(function(){
+            //playWeb3();
         });
         $('#getResultsKeno').click(function(){
             getResultsKeno();
@@ -160,7 +221,9 @@
             });  
         });
     }
-
+    /*
+    *   Realiza el juego con web3.
+    */
     function playWeb3(){
         const contractAdress = "0xe966984f6A7c3f9a80516E2866E62686CD6372a5";      // keno
         
@@ -312,11 +375,11 @@
             console.log(currentAccounts[0]);
             //return currentAccounts;
             return new Promise((resolve, reject) =>{
-                console.log("hola");
+                console.log("Cuentas");
                 console.log(currentAccounts);
                 console.log('EthSession');
                 console.log(EthSession.methods);
-                return EthSession.methods.entrarAlJuego(3,[10,20,3]).send({from: currentAccounts[0], value: 50000000000000000}).then((res) => {
+                return EthSession.methods.entrarAlJuego(num_casillas,casillasArray).send({from: currentAccounts[0], value: 50000000000000000}).then((res) => {
                 //return EthSession.methods.consultarResultado().send({from: currentAccounts[0]}).then((res) => {
                     console.log("Terminando de jugar... Respuesta:");
                     console.log(res);
