@@ -1,0 +1,396 @@
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Casino</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/keno">Keno </a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/ruleta">Ruleta <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/tragamonedas">Tragamonedas</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <h1>
+        Ruleta
+    </h1>
+    <div class="form-group">
+        <label for="apuesta">Apuesta (en wei)</label>
+        <input type="number" name="apuesta" id="apuesta" min="1" required>
+    </div>
+    <div class="form-group">
+        <label for="tipoApuesta">Tipo de apuesta</label>
+        <select name="tipoApuesta" id="tipoApuesta">
+            <option value="0">Color</option>
+            <option value="1">Número</option>
+            <option value="2">Lower</option>
+        </select>    
+    </div>
+    <div class="form-group">
+        <label for="valApuesta">Número a apostar</label>
+        <input type="number" name="valApuesta" id="valApuesta" min="1" required>
+    </div>
+    <div class="form-group">
+        <button id="jugarRuleta"  class="btn btn-large btn-warning" >¡Juega ruleta!</button>
+    </div>
+    <!--
+    <div class="form-group">
+        <button id="getResultsRuleta"  class="btn btn-large btn-warning">Obtener resultados</button>
+    </div>
+    -->
+    <div class="form-group">
+        <button id="spin" class="btn btn-large btn-warning">Spin</button>
+    </div>
+    <div class="form-group">
+        <button id="getBetArray" class="btn btn-large btn-warning">Resultados</button>
+    </div>
+    
+</body>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+<script src="/web3.js" type="text/javascript"></script>
+<script src="/truffle-contract.js" type="text/javascript"></script>
+<script src="/prueba.js" type="text/javascript"></script>
+<script>
+    const contractAdress = "0xc67e981E0efea062b1f1f45958ABa8af231e5C4F";      // Ruleta sin oráculo
+    
+    var aux = "";
+    var aux2 = "";
+    var provider = new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/8a4a483fc902489d93bd7d5d07ef8512");
+    var apuesta = 0;
+    var tipoApuesta = 0;
+
+    const ethEnabled = () => {
+        if (window.ethereum) {
+            window.web3 = new Web3(window.ethereum);
+            window.ethereum.enable();
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    ethEnabled();
+    // ABI ruleta new.
+    var EthSession = new web3.eth.Contract([{"inputs":[],"stateMutability":"payable","type":"constructor","payable":true},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"enum Ruleta2.BetType","name":"betType","type":"uint8"},{"indexed":false,"internalType":"uint256","name":"block","type":"uint256"},{"indexed":false,"internalType":"int256","name":"choice","type":"int256"},{"indexed":false,"internalType":"bool","name":"jugado","type":"bool"},{"indexed":false,"internalType":"uint256","name":"aleatorio","type":"uint256"},{"indexed":false,"internalType":"bool","name":"cobrado","type":"bool"},{"indexed":false,"internalType":"bool","name":"ganador","type":"bool"}],"name":"BetPlaced","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":false,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"enum Ruleta2.BetType","name":"betType","type":"uint8"},{"indexed":false,"internalType":"uint256","name":"block","type":"uint256"},{"indexed":false,"internalType":"int256","name":"choice","type":"int256"},{"indexed":false,"internalType":"int256","name":"landed","type":"int256"},{"indexed":false,"internalType":"bool","name":"win","type":"bool"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"Spin","type":"event"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"BLACK_NUMBERS","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"int256","name":"","type":"int256"}],"name":"COLORS","outputs":[{"internalType":"int256","name":"","type":"int256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"NUM_POCKETS","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"RED_NUMBERS","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"bets","outputs":[{"internalType":"address","name":"user","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"enum Ruleta2.BetType","name":"betType","type":"uint8"},{"internalType":"uint256","name":"block","type":"uint256"},{"internalType":"int256","name":"choice","type":"int256"},{"internalType":"bool","name":"jugado","type":"bool"},{"internalType":"uint256","name":"aleatorio","type":"uint256"},{"internalType":"bool","name":"cobrado","type":"bool"},{"internalType":"bool","name":"ganador","type":"bool"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"counter","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"enum Ruleta2.BetType","name":"betType","type":"uint8"},{"internalType":"int256","name":"choice","type":"int256"}],"name":"wager","outputs":[],"stateMutability":"payable","type":"function","payable":true},{"inputs":[{"internalType":"uint256","name":"id","type":"uint256"}],"name":"spin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_myid","type":"bytes32"},{"internalType":"string","name":"_result","type":"string"}],"name":"__callback","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_queryId","type":"bytes32"},{"internalType":"string","name":"_result","type":"string"},{"internalType":"bytes","name":"_proof","type":"bytes"}],"name":"__callback","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"id","type":"uint256"}],"name":"ganador","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"fund","outputs":[],"stateMutability":"payable","type":"function","payable":true},{"inputs":[],"name":"kill","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"valor","outputs":[],"stateMutability":"payable","type":"function","payable":true}], contractAdress);
+    $(document).ready(function(){
+        var web3;
+        if (typeof web3 !== 'undefined') {
+            web3 = new Web3(web3.currentProvider);
+            //web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/8a4a483fc902489d93bd7d5d07ef8512"));
+        } else {
+            //web3 = new Web3(web3.currentProvider);
+            // set the provider you want from Web3.providers
+            web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/8a4a483fc902489d93bd7d5d07ef8512"));
+        }
+        
+        //play();
+        //playWeb3();
+        $('#jugarRuleta').click(function(){
+            tipoApuesta = parseInt($('#tipoApuesta').val());
+            apuesta     = parseInt($('#apuesta').val());  
+            // el número o color que se quiere apostar.
+            numApuesta  = parseInt($('#valApuesta').val());
+            playWeb3();
+        });
+        $('#getResultsRuleta').click(function(){
+            getResultsRuleta();
+        });
+        $('#getBetArray').click(function(){
+            getBetArray();
+        });
+        $('#spin').click(function(){
+            spin();
+        });
+        
+    });
+    function play(){
+        console.log("Jugando");
+        var provider = new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/8a4a483fc902489d93bd7d5d07ef8512");
+        //var providerInstance = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/8a4a483fc902489d93bd7d5d07ef8512"));
+        //var provider = web3;
+
+        console.log("PRovider");
+        console.log(provider);
+        let accounts = web3.eth.getAccounts()
+        accounts.then((currentAccounts) =>{
+            web3.eth.defaultAccount = currentAccounts[0];
+            console.log("accounts:")
+            console.log(currentAccounts[0]);
+            
+            var EthereumSessionTruffle = TruffleContract(
+                {abi: [
+                    {
+                        inputs: [],
+                        stateMutability: 'payable',
+                        type: 'constructor',
+                        payable: true
+                    },
+                    {
+                        anonymous: false,
+                        inputs: [ [Object] ],
+                        name: 'logInfoJuego',
+                        type: 'event'
+                    },
+                    {
+                        anonymous: false,
+                        inputs: [ [Object], [Object], [Object], [Object] ],
+                        name: 'logPremio',
+                        type: 'event'
+                    },
+                    {
+                        inputs: [],
+                        name: 'jugar',
+                        outputs: [],
+                        stateMutability: 'payable',
+                        type: 'function',
+                        payable: true
+                    },
+                    {
+                        inputs: [],
+                        name: 'verResultados',
+                        outputs: [],
+                        stateMutability: 'nonpayable',
+                        type: 'function'
+                    },
+                    {
+                        inputs: [ [Object], [Object] ],
+                        name: '__callback',
+                        outputs: [],
+                        stateMutability: 'nonpayable',
+                        type: 'function'
+                    },
+                    {
+                        inputs: [ [Object], [Object], [Object] ],
+                        name: '__callback',
+                        outputs: [],
+                        stateMutability: 'nonpayable',
+                        type: 'function'
+                    }
+                    ]})
+            console.log(EthereumSessionTruffle);
+            EthereumSessionTruffle.setProvider(provider);
+            var esTruffleInstance = null;
+            EthereumSessionTruffle.at("0x2Cf911305d29ca55C1E0826f097a75037d5c8A2A").then((instance) =>{
+            //EthereumSessionTruffle.at("0x2965B9c28ec6d0706c41175a5DD00E76974dB77e").then((instance) =>{ // Contrato de Daniel
+                
+                esTruffleInstance = instance;
+                instance.jugar({from: currentAccounts[0], value: 20000000000000000});
+                return instance.jugar({from: currentAccounts[0], value: 20000000000000000})
+            })
+            .then(() =>{
+                console.log("Instance:")
+                console.log(instance)
+                resultados = instance.consultarResultado({from: currentAccounts[0]});
+                return resultados;
+            });  
+        });
+    }
+
+    function playWeb3(){
+        console.log("Jugando web3");
+        console.log(contractAdress);
+        
+        let accounts = web3.eth.getAccounts()
+        accounts.then((currentAccounts) =>{
+            web3.eth.defaultAccount = currentAccounts[0];
+            console.log("accounts:");
+            console.log(currentAccounts[0]);
+            //return currentAccounts;
+            return new Promise((resolve, reject) =>{
+                console.log("hola");
+                console.log(currentAccounts);
+                console.log('EthSession');
+                console.log(EthSession.methods);
+                // 0 es color, 1 es number y 2 es lower
+                //apuesta = 50000000000000000;
+                console.log(`Apostando tipo: ${tipoApuesta}, le apuesta a ${numApuesta} con valor ${apuesta}`);
+                return EthSession.methods.wager(tipoApuesta,numApuesta).send({from: currentAccounts[0], value: apuesta}).then((res) => {
+                    //después el wager se tiene que hacer el spin.
+                    //return EthSession.methods.consultarResultado().send({from: currentAccounts[0]}).then((res) => {
+                    console.log("Creando apuesta:");
+                    console.log(res);
+                    console.log("Obteniendo resultados");
+                    aux = res;
+                    //mensaje = res.events.logJuego.returnValues[0];
+                    //alert(mensaje);
+                    //return;
+                    return EthSession.methods.counter().call().then((idApuesta) => {
+                        console.log("id apuesta:");
+                        console.log(idApuesta);
+                        alert(`tu id de apuesta es el +${idApuesta}, espera a que estén los resultados`);
+                        //mensaje = res.events.logJuego.returnValues[0];
+                        return;
+                    }).catch(error =>{
+                        console.log("Error en spin");
+                        console.log(error);
+                    });
+                }).catch(error =>{
+                    alert("No se puede jugar, inténtalo de nuevo más tarde");
+                    console.log("No se puede jugar, primero necesitas ver los resultados de tu partida anterior.");
+                    console.log(error);
+                });
+            });
+        })
+        
+    }
+    function getResultsRuleta(){
+        console.log("obteniendo Resultados");
+        let accounts = web3.eth.getAccounts()
+        accounts.then((currentAccounts) =>{
+            web3.eth.defaultAccount = currentAccounts[0];
+            console.log("accounts:");
+            console.log(currentAccounts[0]);
+            //return currentAccounts;
+            return new Promise((resolve, reject) =>{
+                console.log("hola");
+                console.log(currentAccounts);
+                console.log('EthSession');
+                console.log(EthSession.methods);
+                return EthSession.methods.consultarResultado().send({from: currentAccounts[0]}).then((res) => {
+                //return EthSession.methods.consultarResultado().send({from: currentAccounts[0]}).then((res) => {
+                    console.log("¡Estos son los resultados!");
+                    results = res.events.logPremio.returnValues;
+                    console.log(results[0] + '   ' +results[1] + '   ' + results[2] + results[3]);
+                    alert( results[0] + '   ' +results[1] + '   ' + results[2] + results[3] );
+                    aux = res;
+                    return;
+                }).catch(error =>{
+                    alert("Resultados aún no listos. Los resultados pueden tardar un poco en generarse.");
+                    console.log("Ha ocurrido un error al obtener resultados:");
+                    console.log(error);
+                    aux = error;
+                });
+            });
+        })
+    }
+    function getBetArray(){
+        console.log("Obteniendo arreglo de apuestas.");
+        console.log(contractAdress);
+        
+        let accounts = web3.eth.getAccounts()
+        accounts.then((currentAccounts) =>{
+            web3.eth.defaultAccount = currentAccounts[0];
+            console.log("accounts:");
+            console.log(currentAccounts[0]);
+            //return currentAccounts;
+            return new Promise((resolve, reject) =>{
+                console.log("hola");
+                console.log(currentAccounts);
+                console.log('EthSession');
+                console.log(EthSession.methods);
+                // 0 es color, 1 es number y 2 es lower
+                //apuesta = 50000000000000000;
+                return EthSession.methods.counter().call().then(idApuesta => {
+                    //después el wager se tiene que hacer el spin.
+                    //return EthSession.methods.consultarResultado().send({from: currentAccounts[0]}).then((res) => {
+                    console.log("Último id de apuesta: ");
+                    console.log(idApuesta);
+                    //mensaje = res.events.logJuego.returnValues[0];
+                    //alert(mensaje);
+                    //return EthSession.methods.spin(idApuesta).send({from: currentAccounts[0]}).then((response) => {
+                    //    console.log("respuesta del spin:");
+                    //    console.log(response);
+                    //    aux2 = response;
+                    return EthSession.methods.bets(idApuesta).call().then(betObj => {
+                        console.log("Objeto de apuests");
+                        console.log(betObj);
+                        if (betObj.aleatorio === "0"){
+                            alert("Aún no se generado el resultado. Inténtalo de nuevo más tarde.");
+                            return;
+                        }
+                        return EthSession.methods.ganador(idApuesta).send({from: currentAccounts[0]}).then(resObj => {
+                            console.log("Objeto resultados:");    
+                                console.log("Objeto resultados:");    
+                            console.log("Objeto resultados:");    
+                            console.log(resObj);    
+                                console.log(resObj);    
+                            console.log(resObj);    
+                            if (resObj.events.Spin.returnValues.win === true){
+                                alert(`¡Felicidades! Ganaste ${resObj.events.Spin.returnValues.amount} wei.`)
+                            }
+                            else if (resObj.events.Spin.returnValues.win === false){
+                                alert(`¡Suerte para la próxima! No ganaste.`)
+                            }
+                            return;
+                        }).catch(error =>{
+                            console.log("Hubo un error al cobrar la apuesta.");
+                            return;
+                        })
+                        return;
+                    }).catch(error =>{
+                        console.log("Ha ocurrido un error al obtener la apuesta,");
+                        return;
+                    });
+                    //}).catch(error =>{
+                    //    alert("No se puede obtener el id, espera a que se genere al número");
+                    //    console.log("Error al obtener el contador");
+                    //    console.log(error);
+                    //});
+                    
+                }).catch(error =>{
+                    alert("Error al obtener id de apuesta");
+                    console.log("Error al obtener id de apuesta.");
+                    console.log(error);
+                });
+            });
+        })
+    }
+    function spin(){
+        console.log("Obteniendo arreglo de apuestas.");
+        console.log(contractAdress);
+        
+        let accounts = web3.eth.getAccounts()
+        accounts.then((currentAccounts) =>{
+            web3.eth.defaultAccount = currentAccounts[0];
+            console.log("accounts:");
+            console.log(currentAccounts[0]);
+            //return currentAccounts;
+            return new Promise((resolve, reject) =>{
+                console.log("hola");
+                console.log(currentAccounts);
+                console.log('EthSession');
+                console.log(EthSession.methods);
+                // 0 es color, 1 es number y 2 es lower
+                //apuesta = 50000000000000000;
+                return EthSession.methods.counter().call().then(idApuesta => {
+                    //después el wager se tiene que hacer el spin.
+                    //return EthSession.methods.consultarResultado().send({from: currentAccounts[0]}).then((res) => {
+                    console.log("Último id de apuesta: ");
+                    console.log(idApuesta);
+                    //mensaje = res.events.logJuego.returnValues[0];
+                    //alert(mensaje);
+                    return EthSession.methods.spin(idApuesta).send({from: currentAccounts[0]}).then((response) => {
+                        alert("tu id de apuesta es el "+idApuesta);
+                        console.log("respuesta del spin:");
+                        console.log(response);
+                        aux2 = response;
+                        return;
+                    }).catch(error =>{
+                        alert("No se puede obtener el id, espera a que se genere al número");
+                        console.log("Error al obtener el contador");
+                        console.log(error);
+                        return;
+                    });
+                }).catch(error =>{
+                    alert("Error al obtener id de apuesta");
+                    console.log("Error al obtener id de apuesta.");
+                    console.log(error);
+                });
+            });
+        })
+    }
+     
+</script>

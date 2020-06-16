@@ -231,147 +231,12 @@
     *   Realiza el juego con web3.
     */
     function playWeb3(){
-        const contractAdress = "0xe966984f6A7c3f9a80516E2866E62686CD6372a5";      // keno
+        const contractAdress = "0x97e90813EEA78654B59b3B438131EF2684cf6962";      // keno
         
         console.log("Jugando web3");
         var provider = new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/8a4a483fc902489d93bd7d5d07ef8512");
         // Versión 2
-        var EthSession = new web3.eth.Contract([
-            {
-                "inputs": [
-                    {
-                        "internalType": "bytes32",
-                        "name": "_myid",
-                        "type": "bytes32"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "_result",
-                        "type": "string"
-                    }
-                ],
-                "name": "__callback",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "bytes32",
-                        "name": "_queryId",
-                        "type": "bytes32"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "_result",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "bytes",
-                        "name": "_proof",
-                        "type": "bytes"
-                    }
-                ],
-                "name": "__callback",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "consultarResultado",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "uint8",
-                        "name": "cantidadNumeros",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "uint256[]",
-                        "name": "numerosElegidos",
-                        "type": "uint256[]"
-                    }
-                ],
-                "name": "entrarAlJuego",
-                "outputs": [],
-                "stateMutability": "payable",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "stateMutability": "payable",
-                "type": "constructor"
-            },
-            {
-                "anonymous": false,
-                "inputs": [
-                    {
-                        "indexed": false,
-                        "internalType": "string",
-                        "name": "",
-                        "type": "string"
-                    }
-                ],
-                "name": "logJuego",
-                "type": "event"
-            },
-            {
-                "anonymous": false,
-                "inputs": [
-                    {
-                        "indexed": false,
-                        "internalType": "string",
-                        "name": "descripcion",
-                        "type": "string"
-                    },
-                    {
-                        "indexed": false,
-                        "internalType": "uint256[]",
-                        "name": "obtenidos",
-                        "type": "uint256[]"
-                    },
-                    {
-                        "indexed": false,
-                        "internalType": "uint256[]",
-                        "name": "elegidos",
-                        "type": "uint256[]"
-                    },
-                    {
-                        "indexed": false,
-                        "internalType": "uint256",
-                        "name": "atinados",
-                        "type": "uint256"
-                    },
-                    {
-                        "indexed": false,
-                        "internalType": "uint256",
-                        "name": "premio",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "logResultado",
-                "type": "event"
-            },
-            {
-                "inputs": [],
-                "name": "verEstado",
-                "outputs": [
-                    {
-                        "internalType": "string",
-                        "name": "estado",
-                        "type": "string"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            }
-        ], contractAdress); 
+        var EthSession = new web3.eth.Contract([{"inputs":[],"stateMutability":"payable","type":"constructor","payable":true},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"","type":"string"}],"name":"logJuego","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"descripcion","type":"string"},{"indexed":false,"internalType":"uint256[]","name":"obtenidos","type":"uint256[]"},{"indexed":false,"internalType":"uint256[]","name":"elegidos","type":"uint256[]"},{"indexed":false,"internalType":"uint256","name":"atinados","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"premio","type":"uint256"}],"name":"logResultado","type":"event"},{"inputs":[{"internalType":"uint8","name":"cantidadNumeros","type":"uint8"},{"internalType":"uint256[]","name":"numerosElegidos","type":"uint256[]"}],"name":"entrarAlJuego","outputs":[],"stateMutability":"payable","type":"function","payable":true},{"inputs":[],"name":"consultarResultado","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"verEstado","outputs":[{"internalType":"string","name":"estado","type":"string"}],"stateMutability":"view","type":"function","constant":true}], contractAdress); 
         // Versión 3: return
         //var EthSession = new web3.eth.Contract([{"inputs":[],"stateMutability":"payable","type":"constructor","payable":true},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"","type":"string"}],"name":"logInfoJuego","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"","type":"string"},{"indexed":false,"internalType":"uint256[]","name":"","type":"uint256[]"},{"indexed":false,"internalType":"string","name":"","type":"string"},{"indexed":false,"internalType":"uint256","name":"","type":"uint256"}],"name":"logPremio","type":"event"},{"inputs":[],"name":"jugar","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"payable","type":"function","payable":true},{"inputs":[],"name":"verResultados","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_myid","type":"bytes32"},{"internalType":"string","name":"_result","type":"string"}],"name":"__callback","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_queryId","type":"bytes32"},{"internalType":"string","name":"_result","type":"string"},{"internalType":"bytes","name":"_proof","type":"bytes"}],"name":"__callback","outputs":[],"stateMutability":"nonpayable","type":"function"}], contractAdress); 
         let accounts = web3.eth.getAccounts()
@@ -404,147 +269,12 @@
         
     }
     function getResultsKeno(){
-        const contractAdress = "0xe966984f6A7c3f9a80516E2866E62686CD6372a5";      // Keno
+        const contractAdress = "0x97e90813EEA78654B59b3B438131EF2684cf6962";      // Keno
         
         console.log("obteniendo Resultados");
         var provider = new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/8a4a483fc902489d93bd7d5d07ef8512");
         // Versión 2
-        var EthSession = new web3.eth.Contract([
-            {
-                "inputs": [
-                    {
-                        "internalType": "bytes32",
-                        "name": "_myid",
-                        "type": "bytes32"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "_result",
-                        "type": "string"
-                    }
-                ],
-                "name": "__callback",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "bytes32",
-                        "name": "_queryId",
-                        "type": "bytes32"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "_result",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "bytes",
-                        "name": "_proof",
-                        "type": "bytes"
-                    }
-                ],
-                "name": "__callback",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "consultarResultado",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "uint8",
-                        "name": "cantidadNumeros",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "uint256[]",
-                        "name": "numerosElegidos",
-                        "type": "uint256[]"
-                    }
-                ],
-                "name": "entrarAlJuego",
-                "outputs": [],
-                "stateMutability": "payable",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "stateMutability": "payable",
-                "type": "constructor"
-            },
-            {
-                "anonymous": false,
-                "inputs": [
-                    {
-                        "indexed": false,
-                        "internalType": "string",
-                        "name": "",
-                        "type": "string"
-                    }
-                ],
-                "name": "logJuego",
-                "type": "event"
-            },
-            {
-                "anonymous": false,
-                "inputs": [
-                    {
-                        "indexed": false,
-                        "internalType": "string",
-                        "name": "descripcion",
-                        "type": "string"
-                    },
-                    {
-                        "indexed": false,
-                        "internalType": "uint256[]",
-                        "name": "obtenidos",
-                        "type": "uint256[]"
-                    },
-                    {
-                        "indexed": false,
-                        "internalType": "uint256[]",
-                        "name": "elegidos",
-                        "type": "uint256[]"
-                    },
-                    {
-                        "indexed": false,
-                        "internalType": "uint256",
-                        "name": "atinados",
-                        "type": "uint256"
-                    },
-                    {
-                        "indexed": false,
-                        "internalType": "uint256",
-                        "name": "premio",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "logResultado",
-                "type": "event"
-            },
-            {
-                "inputs": [],
-                "name": "verEstado",
-                "outputs": [
-                    {
-                        "internalType": "string",
-                        "name": "estado",
-                        "type": "string"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            }
-        ], contractAdress); 
+        var EthSession = new web3.eth.Contract([{"inputs":[],"stateMutability":"payable","type":"constructor","payable":true},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"","type":"string"}],"name":"logJuego","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"descripcion","type":"string"},{"indexed":false,"internalType":"uint256[]","name":"obtenidos","type":"uint256[]"},{"indexed":false,"internalType":"uint256[]","name":"elegidos","type":"uint256[]"},{"indexed":false,"internalType":"uint256","name":"atinados","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"premio","type":"uint256"}],"name":"logResultado","type":"event"},{"inputs":[{"internalType":"uint8","name":"cantidadNumeros","type":"uint8"},{"internalType":"uint256[]","name":"numerosElegidos","type":"uint256[]"}],"name":"entrarAlJuego","outputs":[],"stateMutability":"payable","type":"function","payable":true},{"inputs":[],"name":"consultarResultado","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"verEstado","outputs":[{"internalType":"string","name":"estado","type":"string"}],"stateMutability":"view","type":"function","constant":true}], contractAdress); 
         
         let accounts = web3.eth.getAccounts()
         accounts.then((currentAccounts) =>{
@@ -573,7 +303,8 @@
                         Tu premio en wei es de ${resultados[4]}
                     `);
                     */
-                    alert(res);
+                    alert(JSON.stringify(res.events.logResultado[0].returnValues));
+                    //alert(res);
                     console.log(res);
                     return;
                 }).catch(error =>{
@@ -588,147 +319,12 @@
     }
 
     function getStatusKeno(){
-        const contractAdress = "0xe966984f6A7c3f9a80516E2866E62686CD6372a5";      // Keno
+        const contractAdress = "0x97e90813EEA78654B59b3B438131EF2684cf6962";      // Keno
         
         console.log("obteniendo Resultados");
         var provider = new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/8a4a483fc902489d93bd7d5d07ef8512");
         // Versión 2
-        var EthSession = new web3.eth.Contract([
-            {
-                "inputs": [
-                    {
-                        "internalType": "bytes32",
-                        "name": "_myid",
-                        "type": "bytes32"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "_result",
-                        "type": "string"
-                    }
-                ],
-                "name": "__callback",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "bytes32",
-                        "name": "_queryId",
-                        "type": "bytes32"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "_result",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "bytes",
-                        "name": "_proof",
-                        "type": "bytes"
-                    }
-                ],
-                "name": "__callback",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "consultarResultado",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "uint8",
-                        "name": "cantidadNumeros",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "uint256[]",
-                        "name": "numerosElegidos",
-                        "type": "uint256[]"
-                    }
-                ],
-                "name": "entrarAlJuego",
-                "outputs": [],
-                "stateMutability": "payable",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "stateMutability": "payable",
-                "type": "constructor"
-            },
-            {
-                "anonymous": false,
-                "inputs": [
-                    {
-                        "indexed": false,
-                        "internalType": "string",
-                        "name": "",
-                        "type": "string"
-                    }
-                ],
-                "name": "logJuego",
-                "type": "event"
-            },
-            {
-                "anonymous": false,
-                "inputs": [
-                    {
-                        "indexed": false,
-                        "internalType": "string",
-                        "name": "descripcion",
-                        "type": "string"
-                    },
-                    {
-                        "indexed": false,
-                        "internalType": "uint256[]",
-                        "name": "obtenidos",
-                        "type": "uint256[]"
-                    },
-                    {
-                        "indexed": false,
-                        "internalType": "uint256[]",
-                        "name": "elegidos",
-                        "type": "uint256[]"
-                    },
-                    {
-                        "indexed": false,
-                        "internalType": "uint256",
-                        "name": "atinados",
-                        "type": "uint256"
-                    },
-                    {
-                        "indexed": false,
-                        "internalType": "uint256",
-                        "name": "premio",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "logResultado",
-                "type": "event"
-            },
-            {
-                "inputs": [],
-                "name": "verEstado",
-                "outputs": [
-                    {
-                        "internalType": "string",
-                        "name": "estado",
-                        "type": "string"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function"
-            }
-        ], contractAdress); 
+        var EthSession = new web3.eth.Contract([{"inputs":[],"stateMutability":"payable","type":"constructor","payable":true},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"","type":"string"}],"name":"logJuego","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"descripcion","type":"string"},{"indexed":false,"internalType":"uint256[]","name":"obtenidos","type":"uint256[]"},{"indexed":false,"internalType":"uint256[]","name":"elegidos","type":"uint256[]"},{"indexed":false,"internalType":"uint256","name":"atinados","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"premio","type":"uint256"}],"name":"logResultado","type":"event"},{"inputs":[{"internalType":"uint8","name":"cantidadNumeros","type":"uint8"},{"internalType":"uint256[]","name":"numerosElegidos","type":"uint256[]"}],"name":"entrarAlJuego","outputs":[],"stateMutability":"payable","type":"function","payable":true},{"inputs":[],"name":"consultarResultado","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"verEstado","outputs":[{"internalType":"string","name":"estado","type":"string"}],"stateMutability":"view","type":"function","constant":true}], contractAdress); 
         
         let accounts = web3.eth.getAccounts()
         accounts.then((currentAccounts) =>{
