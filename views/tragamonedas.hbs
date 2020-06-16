@@ -29,7 +29,9 @@
     <div class="form-group">
         <button id="getResultsTragamonedas"  class="btn btn-large btn-warning">Obtener resultados</button>
     </div>
-
+    <div class="form-group">
+        <button id="getStatusTragamonedas"  class="btn btn-large btn-warning">Obtener estatus</button>
+    </div>
     
 </body>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -75,6 +77,9 @@
         });
         $('#getResultsTragamonedas').click(function(){
             getResultsTragamonedas();
+        });
+        $('#getStatusTragamonedas').click(function(){
+            getStatusTragamonedas();
         });
         
     });
@@ -245,4 +250,43 @@
         })
 
     }
+    function getStatusTragamonedas(){
+        //const contractAdress = "0x2Cf911305d29ca55C1E0826f097a75037d5c8A2A";      // Versión 2
+        //const contractAdress = "0xC569b354C8cA672699e50Aa354EDcbecDa47d442";      // Versión 3, con return.
+        const contractAdress = "0x240859f0987A0aa503B1149D96B0d4e532B12E3C";      // Tragamonedas final.
+        
+        console.log("obteniendo Resultados");
+        var provider = new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/8a4a483fc902489d93bd7d5d07ef8512");
+        // Versión 2
+        var EthSession = new web3.eth.Contract([{"inputs":[],"stateMutability":"payable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"estado","type":"string"}],"name":"logEstadoJuego","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"","type":"string"},{"indexed":false,"internalType":"uint256[]","name":"","type":"uint256[]"},{"indexed":false,"internalType":"string","name":"","type":"string"},{"indexed":false,"internalType":"uint256","name":"","type":"uint256"}],"name":"logPremio","type":"event"},{"inputs":[],"name":"jugar","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"verResultados","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"verEstado","outputs":[{"internalType":"string","name":"estado","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_myid","type":"bytes32"},{"internalType":"string","name":"_result","type":"string"}],"name":"__callback","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_queryId","type":"bytes32"},{"internalType":"string","name":"_result","type":"string"},{"internalType":"bytes","name":"_proof","type":"bytes"}],"name":"__callback","outputs":[],"stateMutability":"nonpayable","type":"function"}], contractAdress); 
+        // Versión 3: return
+        //var EthSession = new web3.eth.Contract([{"inputs":[],"stateMutability":"payable","type":"constructor","payable":true},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"","type":"string"}],"name":"logInfoJuego","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"string","name":"","type":"string"},{"indexed":false,"internalType":"uint256[]","name":"","type":"uint256[]"},{"indexed":false,"internalType":"string","name":"","type":"string"},{"indexed":false,"internalType":"uint256","name":"","type":"uint256"}],"name":"logPremio","type":"event"},{"inputs":[],"name":"jugar","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"payable","type":"function","payable":true},{"inputs":[],"name":"verResultados","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_myid","type":"bytes32"},{"internalType":"string","name":"_result","type":"string"}],"name":"__callback","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes32","name":"_queryId","type":"bytes32"},{"internalType":"string","name":"_result","type":"string"},{"internalType":"bytes","name":"_proof","type":"bytes"}],"name":"__callback","outputs":[],"stateMutability":"nonpayable","type":"function"}], contractAdress); 
+        let accounts = web3.eth.getAccounts()
+        accounts.then((currentAccounts) =>{
+            web3.eth.defaultAccount = currentAccounts[0];
+            console.log("accounts:");
+            console.log(currentAccounts[0]);
+            //return currentAccounts;
+            return new Promise((resolve, reject) =>{
+                console.log("hola");
+                console.log(currentAccounts);
+                console.log('EthSession');
+                console.log(EthSession.methods);
+                
+                return EthSession.methods.verEstado().call().then(estatus => {
+                    console.log("Estatus");
+                    console.log(estatus);
+                    alert(estatus);
+                    return;
+                }).catch(error =>{
+                    alert("Error al consultar estado");
+                    console.log("Ha ocurrido un error al consultar estado:");
+                    console.log(error);
+                    aux2 = error;
+                });
+            });
+        })
+
+    }
+
 </script>
