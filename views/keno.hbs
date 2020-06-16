@@ -57,6 +57,9 @@
     <div class="form-group">
         <button id="getResultsKeno"  class="btn btn-large btn-warning">Obtener resultados</button>
     </div>
+    <div class="form-group">
+        <button id="getStatusKeno"  class="btn btn-large btn-warning">Obtener estatus</button>
+    </div>
 
     
 </body>
@@ -136,6 +139,9 @@
         });
         $('#getResultsKeno').click(function(){
             getResultsKeno();
+        });
+        $('#getStatusKeno').click(function(){
+            getStatusKeno();
         });
         
     });
@@ -379,7 +385,7 @@
                 console.log(currentAccounts);
                 console.log('EthSession');
                 console.log(EthSession.methods);
-                return EthSession.methods.entrarAlJuego(num_casillas,casillasArray).send({from: currentAccounts[0], value: 50000000000000000}).then((res) => {
+                return EthSession.methods.entrarAlJuego(num_casillas,casillasArray).send({from: currentAccounts[0], value: apuesta}).then((res) => {
                 //return EthSession.methods.consultarResultado().send({from: currentAccounts[0]}).then((res) => {
                     console.log("Terminando de jugar... Respuesta:");
                     console.log(res);
@@ -574,6 +580,179 @@
                     console.log("Ha ocurrido un error al obtener resultados:");
                     console.log(error);
                     aux = error;
+                });
+            });
+        })
+
+    }
+
+    function getStatusKeno(){
+        const contractAdress = "0xe966984f6A7c3f9a80516E2866E62686CD6372a5";      // Keno
+        
+        console.log("obteniendo Resultados");
+        var provider = new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/8a4a483fc902489d93bd7d5d07ef8512");
+        // Versión 2
+        var EthSession = new web3.eth.Contract([
+            {
+                "inputs": [
+                    {
+                        "internalType": "bytes32",
+                        "name": "_myid",
+                        "type": "bytes32"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "_result",
+                        "type": "string"
+                    }
+                ],
+                "name": "__callback",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "bytes32",
+                        "name": "_queryId",
+                        "type": "bytes32"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "_result",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "bytes",
+                        "name": "_proof",
+                        "type": "bytes"
+                    }
+                ],
+                "name": "__callback",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "consultarResultado",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "uint8",
+                        "name": "cantidadNumeros",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "numerosElegidos",
+                        "type": "uint256[]"
+                    }
+                ],
+                "name": "entrarAlJuego",
+                "outputs": [],
+                "stateMutability": "payable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "stateMutability": "payable",
+                "type": "constructor"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "string",
+                        "name": "",
+                        "type": "string"
+                    }
+                ],
+                "name": "logJuego",
+                "type": "event"
+            },
+            {
+                "anonymous": false,
+                "inputs": [
+                    {
+                        "indexed": false,
+                        "internalType": "string",
+                        "name": "descripcion",
+                        "type": "string"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256[]",
+                        "name": "obtenidos",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256[]",
+                        "name": "elegidos",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "atinados",
+                        "type": "uint256"
+                    },
+                    {
+                        "indexed": false,
+                        "internalType": "uint256",
+                        "name": "premio",
+                        "type": "uint256"
+                    }
+                ],
+                "name": "logResultado",
+                "type": "event"
+            },
+            {
+                "inputs": [],
+                "name": "verEstado",
+                "outputs": [
+                    {
+                        "internalType": "string",
+                        "name": "estado",
+                        "type": "string"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            }
+        ], contractAdress); 
+        
+        let accounts = web3.eth.getAccounts()
+        accounts.then((currentAccounts) =>{
+            web3.eth.defaultAccount = currentAccounts[0];
+            console.log("accounts:");
+            console.log(currentAccounts[0]);
+            //return currentAccounts;
+            return new Promise((resolve, reject) =>{
+                console.log("hola");
+                console.log(currentAccounts);
+                console.log('EthSession');
+                console.log(EthSession.methods);
+                return EthSession.methods.verEstado().call().then((estado) => {
+                //return EthSession.methods.consultarResultado().send({from: currentAccounts[0]}).then((res) => {
+                    console.log("Estado:");
+                    console.log(estado);
+
+                    alert(estado);
+                    console.log(res);
+                    return;
+                }).catch(error =>{
+                    alert("Error al consultar estado");
+                    console.log("Ha ocurrido un error al consultar estado:");
+                    console.log(error);
+                    aux2 = error;
                 });
             });
         })
