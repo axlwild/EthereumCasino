@@ -554,11 +554,20 @@
                 console.log(EthSession.methods);
                 return EthSession.methods.consultarResultado().send({from: currentAccounts[0]}).then((res) => {
                 //return EthSession.methods.consultarResultado().send({from: currentAccounts[0]}).then((res) => {
-                    console.log("¡Estos son los resultados!");
-                    results = res.events.logPremio.returnValues;
-                    console.log(results[0] + '   ' +results[1] + '   ' + results[2] + results[3]);
-                    alert( results[0] + '   ' +results[1] + '   ' + results[2] + results[3] );
                     aux = res;
+                    console.log("¡Estos son los resultados!");
+                    //results = res.events.logPremio.returnValues;
+                    //console.log(results[0] + '   ' +results[1] + '   ' + results[2] + results[3]);
+                    //alert( results[0] + '   ' +results[1] + '   ' + results[2] + results[3] );
+                    resultados = res.events.logResultado[0].returnValues;
+                    alert(`${resultados[0]}
+                        ${resultados[1]}
+                        Estos son los números que escogiste:
+                        ${resultados[2]}
+                        Le atinaste a ${resultados[3]}
+                        Tu premio en wei es de ${resultados[4]}
+                    `);
+                    console.log(res);
                     return;
                 }).catch(error =>{
                     alert("Resultados aún no listos. Los resultados pueden tardar un poco en generarse.");
