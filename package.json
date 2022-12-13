@@ -19,7 +19,7 @@
   "dependencies": {
     "@truffle/contract": "^4.2.8",
     "bootstrap": "^4.0.0-alpha.6",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "hbs": "^4.1.1",
     "truffle": "^5.1.29",
     "web3": "^1.2.9"
